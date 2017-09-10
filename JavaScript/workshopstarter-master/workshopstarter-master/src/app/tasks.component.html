@@ -1,0 +1,22 @@
+<div class="raw">
+    <div class="col-md-12">
+        <div class="grid grid-pad">
+            <a *ngFor="let task of tasks" class="col-1-4" style="position:relative;">  
+                <div class="module task" (click)="onSelected(task)">
+                    <div *ngIf="task.isCompleted; else elseBlock">
+                        <h4 style="text-decoration: line-through; color:chartreuse">{{task.text}}</h4>                            
+                    </div>
+                    <ng-template #elseBlock>
+                                <h4>{{task.text}}</h4>                       
+                    </ng-template> 
+                </div>
+                <div (click)="delete(task)" style="position:absolute; width:5px; cursor:pointer; top:0; right:10px">x</div>            
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+            <input type="text" id = taskText>
+            <button (click)="addTask()">Add Task</button>     
+    </div>
+</div>
