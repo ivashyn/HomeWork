@@ -2,9 +2,9 @@ var scene = (function () {
     "use strict";
 
     var scene = new THREE.Scene();
-    var renderer = new THREE.WebGLRenderer({alpha:true});
+    var renderer = new THREE.WebGLRenderer({ alpha:true });
 
-    var camera,sphere,material,geometry,texture;
+    var camera, sphere, material, geometry, texture;
 
     function InitScene() {
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,21 +19,23 @@ var scene = (function () {
 
         scene.add(camera);
 
-        texture = new THREE.TextureLoader().load( 'earth.jpg');
-        material = new THREE.MeshBasicMaterial({map: texture});
-        geometry = new THREE.SphereGeometry(10, 50, 50);
+        var loader = new THREE.TextureLoader();
 
-        sphere = new  THREE.Mesh(geometry,material);
+        loader.load('earth.jpg', function(texture) {
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            geometry = new THREE.SphereGeometry(10, 50, 50);
 
-        scene.add(sphere);
+            sphere = new  THREE.Mesh(geometry,material);
 
-        render();
+            scene.add(sphere);
+
+            render();
+        });
     }
 
     function render() {
         sphere.rotation.y += 0.01;
-
-
+        
         renderer.render(scene,camera);
         requestAnimationFrame(render);
     }
