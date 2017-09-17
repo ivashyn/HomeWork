@@ -29,7 +29,11 @@ function isCreditCardValid(input) {
             }
 
             if (isAllDuplicates(numbers)) {
-                return invalidResult("All the digits cannot be the same");
+                return invalidResult(result, "All the digits cannot be the same");
+            }
+
+            if (!LuhnAlgorithm(numbers)) {
+                return invalidResult(result, "Luhn Algoritm returned false");
             }
 
             return returnCorrectResult(result, input);
@@ -61,8 +65,10 @@ function isSumOfNumbersLessThen16(numbers, minimumSumOfCardNumbers) {
         return +memo + +value;
     }, 0);
 
-    if (sumOfNumbers <= minimumSumOfCardNumbers)
+    if (sumOfNumbers <= minimumSumOfCardNumbers) {
         return true;
+    }
+    else return false;
 }
 
 function isAllDuplicates(numbers) {
@@ -71,6 +77,37 @@ function isAllDuplicates(numbers) {
             return false;
     }
     return true;
+}
+
+function LuhnAlgorithm(numbers) {
+    var resultNumbers = [];
+    var checkNumber = 9;
+
+    //numbers length is always 16
+    for (var i = 0; i < numbers.length; i++) {
+        if (i % 2 == 0) {
+            var number = 2 * numbers[i];
+            if (number > checkNumber) {
+                resultNumbers.push(number - checkNumber)
+            }
+            else {
+                resultNumbers.push(number);
+            }
+        }
+        else {
+            resultNumbers.push(numbers[i]);
+        }
+    }
+
+    var sumOfNumbers = resultNumbers.reduce(function (memo, value) {
+        return +memo + +value;
+    }, 0);
+
+    if (sumOfNumbers % 10 == 0) {
+        return true;
+    }
+
+    return false;
 }
 
 function invalidResult(result, error) {
