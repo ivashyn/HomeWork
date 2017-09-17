@@ -1,65 +1,85 @@
 function isCreditCardValid(input) {
-    
+
+    var cardNumberLength = 19;
+    var minimumSumOfCardNumbers = 16;
     var result = {};
+
     result.valid = false;
     result.number = input;
 
-    if(input.length != 19) {
-        invalidResult(result,"wrong_length");
-        return false;
+    if (isWrongLength(input, cardNumberLength)) {
+        return invalidResult(result, "wrong_length");
     }
 
     else {
-        var regexInputFormat = /\d{4}-\d{4}-\d{4}-\d{4}/;
-        var isFormatCorrect = regexInputFormat.test(input);
+        var isInputFormatCorrect = isFormatCorrect(input);
 
-        if(!isFormatCorrect) {
-            invalidResult(result, "invalid format. Should be XXXX-XXXX-XXXX-XXXX");
-            return false;
+        if (!isInputFormatCorrect) {
+            return invalidResult(result, "invalid format. Should be XXXX-XXXX-XXXX-XXXX");
         }
         else {
-            var regexNumbers = /\d/g;
-            var numbers = input.match(regexNumbers);
+            var numbers = getNumbersFromInput(input);
 
-            if(numbers[numbers.length-1] % 2 != 0){
-                invalidResult(result,"The last digit must be even");
-                return false;
+            if (isLastNumberOdd(numbers)) {
+                return invalidResult(result, "The last digit must be even");
             }
 
-            var sumOfNumbers = numbers.reduce(function(memo, value) {
-                return +memo + +value;
-            }, 0);
-
-            if(sumOfNumbers<=16) {
-                invalidResult(result, "The sum of all the digits must be greater than 16");
-                return false;
-            }
-                
-            if(isAllDuplicates(numbers)) {
-                invalidResult("All the digits cannot be the same");
-                return false;
+            if (isSumOfNumbersLessThen16(numbers, minimumSumOfCardNumbers)) {
+                return invalidResult(result, "The sum of all the digits must be greater than 16");
             }
 
-            returnCorrectResult(result, input)
-        } 
+            if (isAllDuplicates(numbers)) {
+                return invalidResult("All the digits cannot be the same");
+            }
+
+            return returnCorrectResult(result, input);
+        }
     }
 }
 
+
+function isWrongLength(input, cardNumberLength) {
+    return input.length != cardNumberLength;
+}
+
+function isFormatCorrect(input) {
+    var regexInputFormat = /\d{4}-\d{4}-\d{4}-\d{4}/;
+    return regexInputFormat.test(input);
+}
+
+function getNumbersFromInput(input) {
+    var regexNumbers = /\d/g;
+    return input.match(regexNumbers);
+}
+
+function isLastNumberOdd(numbers) {
+    return numbers[numbers.length - 1] % 2 != 0;
+}
+
+function isSumOfNumbersLessThen16(numbers, minimumSumOfCardNumbers) {
+    var sumOfNumbers = numbers.reduce(function (memo, value) {
+        return +memo + +value;
+    }, 0);
+
+    if (sumOfNumbers <= minimumSumOfCardNumbers)
+        return true;
+}
+
 function isAllDuplicates(numbers) {
-    for (var i = 0; i < numbers.length-1; i++) {
-        if(numbers[i] != numbers[i+1])
+    for (var i = 0; i < numbers.length - 1; i++) {
+        if (numbers[i] != numbers[i + 1])
             return false;
     }
     return true;
 }
 
-function invalidResult(result,error) {
+function invalidResult(result, error) {
     result.error = error;
-    console.log(result);
+    return result;
 }
 
 function returnCorrectResult(result, number) {
     result.valid = true;
     result.number = number;
-    console.log(result);
+    return result;
 }
